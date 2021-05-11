@@ -40,6 +40,7 @@
   "appid": "wx2de4eacf173aa3d9",
   "projectname": "sust-navigation",
   "libVersion": "2.14.1",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
   "condition": {
     "search": {
       "list": []
