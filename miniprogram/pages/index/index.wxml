@@ -75,3 +75,5 @@
 
 
 </view>
+<view style="position:relative; width: 100%; background: #d3d3d3; min-height: 100px"></view>
+
