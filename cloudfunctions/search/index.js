@@ -4,6 +4,11 @@ const cloud = require('wx-server-sdk')
 cloud.init()
 
 // 云函数入口函数
+/**
+ * 
+ * @param {*} event 
+ * @param {*} context 
+ */
 exports.main = async (event, context) => {
   const keyword = event.keyword
   switch (event.action) {
