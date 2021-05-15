@@ -27,7 +27,7 @@ exports.main = async (event, context) => {
   }
   let units = db_result.data.units
   //unit的name是否可能重复
-  let data = []
+  let data = null
   if (unit_name != null || units != null) {
     let length = units.length
     let flag = 0;
