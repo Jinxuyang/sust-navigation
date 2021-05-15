@@ -13,7 +13,7 @@ Page({
    */
   onLoad: function (options) {
     wx.cloud.callFunction({
-      name: 'people-unit-point',
+      name: 'units-point',
       data:{
        //floor: 1,
        unit_name: "测试单位",

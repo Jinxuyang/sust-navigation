@@ -8,11 +8,19 @@ const cloud = require('wx-server-sdk')
  */
 exports.main = async (event, context) => {
   cloud.init()
-const db = cloud.database().collection('sust_point')
-const point_id = event.point_id
-let data= await db.doc(point_id).field({
-  units: false
-}).get()
-
-return data.data
+  const db = cloud.database().collection('sust_point')
+  const point_id = event.point_id
+  let data
+  try {
+    data = await db.doc(point_id).field({
+      units: false
+    }).get()
+  } catch (error) {
+    data = null
+  }
+  if (data != null) {
+    return data.data
+  } else {
+    return null
+  }
 }
