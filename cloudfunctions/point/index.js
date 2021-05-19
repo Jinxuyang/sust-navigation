@@ -1,5 +1,7 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
+
+cloud.init()
 // 云函数入口函数
 /**
  * 通过id查询到point的坐标和名称
@@ -7,7 +9,6 @@ const cloud = require('wx-server-sdk')
  * @param {*} context 
  */
 exports.main = async (event, context) => {
-  cloud.init()
   const db = cloud.database().collection('sust_point')
   const point_id = event.point_id
   let data

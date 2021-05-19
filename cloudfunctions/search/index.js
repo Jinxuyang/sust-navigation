@@ -29,7 +29,7 @@ exports.main = async (event, context) => {
 
 async function getUnits(keyword){
   const db = cloud.database().collection('sust_point')
-  db.aggregate()
+  return await db.aggregate()
   .unwind('$units')
   .addFields({
     units: {
@@ -51,14 +51,12 @@ async function getUnits(keyword){
       $options: 'i'
     }
   })
-  .end().then(res => {
-    console.log(res);
-  })
+  .end()
 }
 
 async function getEvents(keyword){
   const db = cloud.database().collection('sust_point')
-  db.aggregate()
+  return await db.aggregate()
   .unwind('$units')
   .unwind('$units.events')
   .addFields({
@@ -77,14 +75,12 @@ async function getEvents(keyword){
       $options: 'i'
     }
   })
-  .end().then(res => {
-    console.log(res)
-  })
+  .end()
 }
 
 async function getPeople(keyword){
   const db = cloud.database().collection('sust_point')
-  db.aggregate()
+  return await db.aggregate()
   .unwind('$units')
   .unwind('$units.people')
   .addFields({
@@ -103,7 +99,5 @@ async function getPeople(keyword){
       $options: 'i'
     }
   })
-  .end().then(res => {
-    console.log(res)
-  })
+  .end()
 }

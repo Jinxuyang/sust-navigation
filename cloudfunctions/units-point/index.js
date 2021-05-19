@@ -26,7 +26,7 @@ exports.main = async (event, context) => {
     return null
   }
   let units = db_result.data.units
-  let data = null
+  let data = []
   if (floor != null) {
     let length = units.length
     let flag = 0;
