@@ -19,33 +19,31 @@ Page({
   //点开某楼层
   onOpen(event) {
     let that = this
-    let floor = event.detail
-    let point_id = that.data.point_id
-    let description = []
+    let floor = event.currentTarget.dataset.floor
+    let point_id = this.data.point_id
+    console.log("floor_num:" + floor);
+    console.log("point_id:" + point_id);
+    
     wx.cloud.callFunction({
       name: 'units-point',
       data: {
         point_id,
         floor
-      },
-      success: res => {
-        // console.log('onOpen-res:',res.result);
-        description = res.result
-        that.setData({
-          description
-        })
-        console.log('description:', that.data.description);
       }
+    }).then(res => {
+      let units_floor = res.result
+      this.setData({
+        units_floor
+      })
+      console.log(res);
     })
   },
 
   //点击部门查看部门详细可以办理的事件或办公室老师
-  toDetailEvent() {
+  toDetailEvent(e) {
     console.log('进入部门详情');
-    // console.log(this.data.description[0].events);
-    // console.log(this.data.description[0].people);
-    let events = JSON.stringify(this.data.description[0].events)
-    let people = JSON.stringify(this.data.description[0].people)
+    let events = JSON.stringify(e.currentTarget.dataset.events)
+    let people = JSON.stringify(e.currentTarget.dataset.people)
     wx.navigateTo({
       url: '../depart/depart?events=' + events + '&people=' + people,
     })
@@ -62,19 +60,21 @@ Page({
       point_id
     }),
     wx.cloud.callFunction({
-      name: 'units-point',
+      name: 'point',
       data: {
         point_id
-      },
-      success: res => {
-        console.log('units-point-res:',res.result);
-        let floor_detail = []
-        floor_detail = res.result
-        that.setData({
-          floor_detail
-        })
-        console.log('floor:',floor_detail);
       }
+    }).then(res => {
+      console.log('units-point-res:',res.result);
+      let floor_num = res.result.floors
+      let floor_array = [];
+      for (let index = 1; index <= floor_num; index++) {
+        floor_array.push(index)
+      }
+      that.setData({
+        floor_array
+      })
+      console.log('floor_num:'+floor_array);
     })
   },
 

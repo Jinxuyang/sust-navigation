@@ -3,10 +3,12 @@
 
   <!-- 地图 -->
   <view class="map_container">
-    <map id="global_map" polygons="{{polygons}}" longitude="{{ longitude }}" latitude="{{ latitude }}" markers="{{ markers }}" scale="16" controls="{{ controls }}" style="width: {{ map_width }}px; height: {{ map_height }}px" bindmarkertap="toDetail" bindcallouttap="toDetail" show-location="true"></map>
+    <map id="global_map" polygons="{{polygons}}" longitude="{{ longitude }}" latitude="{{ latitude }}" markers="{{ markers }}" scale="{{scale}}" controls="{{ controls }}" style="width: {{ map_width }}px; height: {{ map_height }}px" bindmarkertap="toDetail" bindcallouttap="toDetail" show-location="true"></map>
   </view>
 
   <view class="cu-modal1 bottom-modal show" style="bottom: {{bottomHeight}}">
+
+      <!--搜索框+按钮-->
       <view class="cu-dialog bg-white">
         <view class="padding-xl">
           <view class="cu-bar search bg-white">
@@ -27,6 +29,15 @@
             <button class="cu-btn bg-green shadow-blur round" bindtap="search">搜索</button>
           </view>
         </view>
+      </view>
+
+      <view class="cu-list menu border card-menu margin-top" >
+        <view class="cu-item" wx:for="{{units}}" wx:key="index">
+					<button class="cu-btn content" bindtap="getCoordinate" data-point_id="{{item.point_id}}">
+						<text class="text-grey">{{item.name}}@{{item.position}}</text>
+					</button>
+          <button bindtap="routePlan" data-point_id="{{item.point_id}}" >去这</button>
+				</view>
       </view>
 
       <!-- 搜索方式 -->
