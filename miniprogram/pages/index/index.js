@@ -182,6 +182,9 @@ Page({
   getCoordinate(e){
     let point_id = e.currentTarget.dataset.point_id
     console.log("point_id:" + point_id);
+    this.setData({
+      point_id
+    })
     wx.cloud.callFunction({
           name:'point',
           data: {
