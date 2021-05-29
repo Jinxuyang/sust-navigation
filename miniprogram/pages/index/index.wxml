@@ -7,6 +7,8 @@
   </view>
 
   <view class="cu-modal1 bottom-modal show" style="bottom: {{bottomHeight}}">
+
+      <!--搜索框+按钮-->
       <view class="cu-dialog bg-white">
         <view class="padding-xl">
           <view class="cu-bar search bg-white">
@@ -27,6 +29,14 @@
             <button class="cu-btn bg-green shadow-blur round" bindtap="search">搜索</button>
           </view>
         </view>
+      </view>
+
+      <view class="cu-list menu border card-menu margin-top" >
+        <view class="cu-item" wx:for="{{units}}" wx:key="index">
+					<button class="cu-btn content" bindtap="getCoordinate" data-point_id="{{item.point_id}}">
+						<text class="text-grey">{{item.name}}@{{item.position}}</text>
+					</button>
+				</view>
       </view>
 
       <!-- 搜索方式 -->

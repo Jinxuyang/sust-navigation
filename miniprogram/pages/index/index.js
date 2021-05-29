@@ -87,7 +87,8 @@ Page({
     flyFlag: false,
     bottomHeight: '0rpx',
     keyword: '',
-    action: ''
+    action: '',
+    units: []
   },
 
   onReady: function(e) {
@@ -95,12 +96,11 @@ Page({
   },
 
   onLoad: function() {
-    let that = this
     wx.getSystemInfo({
       success: (res) => {
         // console.log(res.windowWidth)
         // console.log(res.windowHeight)
-        that.setData({
+        this.setData({
           map_width: res.windowWidth,
           map_height: res.windowHeight
         })
@@ -118,7 +118,6 @@ Page({
     })
     // console.log("之后", this.data.bottomHeight)
   },
-
 
   // 切换搜索选项
   choiceStatus(e) {
@@ -147,7 +146,6 @@ Page({
 
   //点击搜索 
   search() {
-    let that = this
     let keyword = this.data.keyword
     let action = this.data.action
     console.log('keyword:',keyword)
@@ -161,63 +159,66 @@ Page({
         }
       }).then(res => {
         console.log('点击搜索res',res.result)
-        let point_id = res.result.list[0].point_id
-        that.setData({
-          point_id
+        this.setData({
+          units: res.result.list
         })
-        console.log('point_id:', that.data.point_id)
-        wx.cloud.callFunction({
-          name:'point',
-          data: {
-            point_id
-          },
-          success: res => {
-            console.log('point-res:', res.result)
-            let markers = that.data.markers
-            let marker = {
-              id:0,
-              longitude: res.result.coordinate.coordinates[0],
-              latitude: res.result.coordinate.coordinates[1],
-              callout: {
-                content: res.result.name,
-                color: '#e15f41',
-                fontSize: 12,
-                borderRadius:20,
-                padding: 10,
-                display: 'ALWAYS'
-              },
-              iconPath: '../../images/location_red.png',
-              width: 50,
-              height: 50
-            }
-            // console.log('marker:', marker)
-            markers.pop()
-            markers.push(marker)
-            that.setData({
-              markers
-            })
-            that.mapCtx.moveToLocation({
-              longitude: marker.longitude,
-              latitude: marker.latitude
-            })
-            console.log('markers:', that.data.markers) 
-          },
-          fail: err => {
-            console.log('请求point错误：',err)
-            Toast('网络错误')
-          }
-        })
-        that.setData({
-          keyword: ''
-        })
+        console.log('units:', this.data.units)
+        
+        // this.setData({
+        //   keyword: ''
+        // })
       }).catch(err => {
         console.log('请求search错误：',err)
         Toast('无法搜索到该地')
       })
   
     } else {
-      Toast('请输入搜索关键字')
+      this.setData({
+        units: ""
+      })
     }
+  },
+
+  getCoordinate(e){
+    let point_id = e.currentTarget.dataset.point_id
+    console.log("point_id:" + point_id);
+    wx.cloud.callFunction({
+          name:'point',
+          data: {
+            point_id
+          }
+        }).then(res => {
+          console.log('point:', res.result)
+          let markers = this.data.markers
+          let marker = {
+            id:0,
+            longitude: res.result.coordinate.coordinates[0],
+            latitude: res.result.coordinate.coordinates[1],
+            callout: {
+              content: res.result.name,
+              color: '#e15f41',
+              fontSize: 12,
+              borderRadius:20,
+              padding: 10,
+              display: 'ALWAYS'
+            },
+            iconPath: '../../images/location_red.png',
+            width: 50,
+            height: 50
+          }
+          // console.log('marker:', marker)
+          markers.pop()
+          markers.push(marker)
+          this.setData({
+            markers
+          })
+          this.mapCtx.moveToLocation({
+            longitude: marker.longitude,
+            latitude: marker.latitude
+          })
+          console.log('markers:', this.data.markers) 
+          
+        })
   },
 
   toDetail() {
