@@ -4,9 +4,8 @@
     <van-collapse-item name="{{item}}" bindtap="onOpen" data-floor="{{item}}" wx:for="{{floor_array}}" wx:key="index">
       <view slot="title"><van-icon name="home-o" /> {{item + '楼'}}</view>
       <view wx:for="{{units_floor}}" wx:key="index">
-        <van-card desc="{{item.description}}" title="{{item.name}}" desc-class="desc-font" custom-class="custom" bindtap="toDetailEvent"/>
+        <van-card desc="{{item.description}}" title="{{item.name}}" desc-class="desc-font" custom-class="custom" bindtap="toDetailEvent" data-events="{{item.events}}" data-people="{{item.people}}"/>
       </view>
-      
     </van-collapse-item>
   </van-collapse>
 </view>

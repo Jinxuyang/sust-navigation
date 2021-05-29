@@ -40,12 +40,10 @@ Page({
   },
 
   //点击部门查看部门详细可以办理的事件或办公室老师
-  toDetailEvent() {
+  toDetailEvent(e) {
     console.log('进入部门详情');
-    // console.log(this.data.description[0].events);
-    // console.log(this.data.description[0].people);
-    let events = JSON.stringify(this.data.description[0].events)
-    let people = JSON.stringify(this.data.description[0].people)
+    let events = JSON.stringify(e.currentTarget.dataset.events)
+    let people = JSON.stringify(e.currentTarget.dataset.people)
     wx.navigateTo({
       url: '../depart/depart?events=' + events + '&people=' + people,
     })
