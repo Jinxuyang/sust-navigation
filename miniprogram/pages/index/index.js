@@ -3,6 +3,10 @@ import Toast from '../../dist/toast/toast';
 const app = getApp()
 
 Page({
+
+  /**
+   * 页面的初始数据
+   */
   data: {
     longitude: 108.977368,
     latitude: 34.377653,
