@@ -1,124 +1,232 @@
 //index.js
+import Toast from '../../dist/toast/toast';
 const app = getApp()
 
 Page({
   data: {
-    avatarUrl: './user-unlogin.png',
-    userInfo: {},
-    hasUserInfo: false,
-    logged: false,
-    takeSession: false,
-    requestResult: '',
-    canIUseGetUserProfile: false,
-    canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') // 如需尝试获取用户信息可改为false
+    longitude: 108.977368,
+    latitude: 34.377653,
+    map_width: 375,
+    map_height: 700,
+    markers: [
+      {
+      id: 0,
+      longitude: 108.977368,
+      latitude: 34.377653,
+      callout: {
+        content: '当前位置',
+        color: '#e15f41',
+        fontSize: 12,
+        borderRadius:20,
+        padding: 10,
+        display: 'ALWAYS'
+      },
+      iconPath: '../../images/location_blue.png',
+      width: 50,
+      height: 50,
+      bottomHeight: 0,
+      point_id: ''
+    },
+    ],
+    polygons: [{
+      points: [
+        {longitude: 108.976772, latitude: 34.381229},
+        {longitude: 108.976493, latitude: 34.38177},
+        {longitude: 108.976112, latitude: 34.381721},
+        {longitude: 108.9754521, latitude: 34.383824},
+        {longitude: 108.98028, latitude: 34.3847},
+        {longitude: 108.980146, latitude: 34.385121},
+        {longitude: 108.981439, latitude: 34.385347},
+        {longitude: 108.981562, latitude: 34.385063},
+        {longitude: 108.981305, latitude: 34.384598},
+        {longitude: 108.981391, latitude: 34.382398},
+        {longitude: 108.976772, latitude: 34.381229},
+      ],
+      fillColor: '#4F94CD33',
+      strokeColor: '#fff',
+      strokeWidth: 2,
+      zIndex: 1
+    },{
+      points:[
+        {longitude: 108.971477, latitude: 34.379486},
+        {longitude: 108.981321, latitude: 34.382146},
+        {longitude: 108.981176, latitude: 34.375115},
+        {longitude: 108.980441, latitude: 34.375071},
+        {longitude: 108.973011, latitude: 34.375603},
+        {longitude: 108.972931, latitude: 34.376967},
+        {longitude: 108.971509, latitude: 34.377006},
+        {longitude: 108.971477, latitude: 34.379486},
+      ],
+      fillColor: '#4F94CD33',
+      strokeColor: '#fff',
+      strokeWidth: 2,
+      zIndex: 1
+    }],
+    icon: [
+      {
+        name: 'location',
+        description: '找地点',
+        id: 'unit'
+      },
+      {
+        name: 'addressbook',
+        description: '找人',
+        id: 'person'
+      },
+      {
+        name: 'text',
+        description: '办事',
+        id: 'event'
+      }
+    ],
+    isChecked: 0,
+    flyFlag: false,
+    bottomHeight: '0rpx',
+    keyword: '',
+    action: ''
+  },
+
+  onReady: function(e) {
+    this.mapCtx = wx.createMapContext('global_map')
   },
 
   onLoad: function() {
-    if (!wx.cloud) {
-      wx.redirectTo({
-        url: '../chooseLib/chooseLib',
-      })
-      return
-    }
-    if (wx.getUserProfile) {
-      this.setData({
-        canIUseGetUserProfile: true,
-      })
-    }
-  },
-
-  getUserProfile() {
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+    let that = this
+    wx.getSystemInfo({
       success: (res) => {
-        this.setData({
-          avatarUrl: res.userInfo.avatarUrl,
-          userInfo: res.userInfo,
-          hasUserInfo: true,
-        })
-      }
-    })
-  },
-
-  onGetUserInfo: function(e) {
-    if (!this.data.logged && e.detail.userInfo) {
-      this.setData({
-        logged: true,
-        avatarUrl: e.detail.userInfo.avatarUrl,
-        userInfo: e.detail.userInfo,
-        hasUserInfo: true,
-      })
-    }
-  },
-
-  onGetOpenid: function() {
-    // 调用云函数
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        console.log('[云函数] [login] user openid: ', res.result.openid)
-        app.globalData.openid = res.result.openid
-        wx.navigateTo({
-          url: '../userConsole/userConsole',
+        // console.log(res.windowWidth)
+        // console.log(res.windowHeight)
+        that.setData({
+          map_width: res.windowWidth,
+          map_height: res.windowHeight
         })
       },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-        wx.navigateTo({
-          url: '../deployFunctions/deployFunctions',
-        })
-      }
     })
   },
 
-  // 上传图片
-  doUpload: function () {
-    // 选择图片
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: function (res) {
-        wx.showLoading({
-          title: '上传中',
+  getHeight(e) {
+    // console.log("获取键盘高度",e.detail.height)
+    // console.log(this.data.bottomHeight)
+    let bottomHeight = this.data.bottomHeight
+    bottomHeight = (e.detail.height * 2 ) + 'rpx'
+    this.setData({
+      bottomHeight
+    })
+    // console.log("之后", this.data.bottomHeight)
+  },
+
+
+  // 切换搜索选项
+  choiceStatus(e) {
+    console.log(e)
+    let srchAction =''
+    switch (e.currentTarget.id) {
+      case 'unit':
+        srchAction = 'getUnit'
+        break;
+      case 'person':
+        srchAction = 'getPerson'
+        break;
+      case 'event':
+        srchAction = 'getEvent'
+        break;
+      default:
+        srchAction = 'getUnit'
+        break;
+    }
+    console.log('action:', srchAction)
+    this.setData({
+      isChecked: e.currentTarget.id,
+      action: srchAction
+    })
+  },
+
+  //点击搜索 
+  search() {
+    let that = this
+    let keyword = this.data.keyword
+    let action = this.data.action
+    console.log('keyword:',keyword)
+    console.log('action:',action)
+    if(keyword) {
+      wx.cloud.callFunction({
+        name: 'search',
+        data: {
+          keyword,
+          action,
+        }
+      }).then(res => {
+        console.log('点击搜索res',res.result)
+        let point_id = res.result.list[0].point_id
+        that.setData({
+          point_id
         })
-
-        const filePath = res.tempFilePaths[0]
-        
-        // 上传图片
-        const cloudPath = `my-image${filePath.match(/\.[^.]+?$/)[0]}`
-        wx.cloud.uploadFile({
-          cloudPath,
-          filePath,
+        console.log('point_id:', that.data.point_id)
+        wx.cloud.callFunction({
+          name:'point',
+          data: {
+            point_id
+          },
           success: res => {
-            console.log('[上传文件] 成功：', res)
-
-            app.globalData.fileID = res.fileID
-            app.globalData.cloudPath = cloudPath
-            app.globalData.imagePath = filePath
-            
-            wx.navigateTo({
-              url: '../storageConsole/storageConsole'
+            console.log('point-res:', res.result)
+            let markers = that.data.markers
+            let marker = {
+              id:0,
+              longitude: res.result.coordinate.coordinates[0],
+              latitude: res.result.coordinate.coordinates[1],
+              callout: {
+                content: res.result.name,
+                color: '#e15f41',
+                fontSize: 12,
+                borderRadius:20,
+                padding: 10,
+                display: 'ALWAYS'
+              },
+              iconPath: '../../images/location_red.png',
+              width: 50,
+              height: 50
+            }
+            // console.log('marker:', marker)
+            markers.pop()
+            markers.push(marker)
+            that.setData({
+              markers
             })
-          },
-          fail: e => {
-            console.error('[上传文件] 失败：', e)
-            wx.showToast({
-              icon: 'none',
-              title: '上传失败',
+            that.mapCtx.moveToLocation({
+              longitude: marker.longitude,
+              latitude: marker.latitude
             })
+            console.log('markers:', that.data.markers) 
           },
-          complete: () => {
-            wx.hideLoading()
+          fail: err => {
+            console.log('请求point错误：',err)
+            Toast('网络错误')
           }
         })
-      },
-      fail: e => {
-        console.error(e)
-      }
+        that.setData({
+          keyword: ''
+        })
+      }).catch(err => {
+        console.log('请求search错误：',err)
+        Toast('无法搜索到该地')
+      })
+  
+    } else {
+      Toast('请输入搜索关键字')
+    }
+  },
+
+  toDetail() {
+    wx.navigateTo({
+      url: '../detail/detail?point_id=' + this.data.point_id,
     })
   },
 
+  //获取搜索的值
+  getKeyWord(e) {
+    this.setData({
+      keyword: e.detail.value,
+      bottomHeight: 0
+    })
+  }
 })

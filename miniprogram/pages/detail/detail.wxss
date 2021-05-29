@@ -1,0 +1,12 @@
+/* pages/detail/detail.wxss */
+
+.custom {
+  height: 70rpx;
+  line-height: 70rpx;
+}
+
+.desc-font {
+  font-size: 30rpx;
+  font-weight: 400;
+  color: #7f8c8d;
+}
