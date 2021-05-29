@@ -1,0 +1,10 @@
+<!--pages/detail/detail.wxml-->
+<view class="detail">
+  <van-collapse accordion value="{{ activeName }}" bind:change="onChange" wx:for="{{floor_detail}}"
+    wx:key="description" wx:for-item="i" bind:open="onOpen" >
+    <van-collapse-item name="{{i.floor}}">
+      <view slot="title"><van-icon name="home-o" /> {{i.floor + '楼'}}</view>
+      <van-card desc="{{i.description}}" desc-class="desc-font" custom-class="custom" bindtap="toDetailEvent"/>
+    </van-collapse-item>
+  </van-collapse>
+</view>

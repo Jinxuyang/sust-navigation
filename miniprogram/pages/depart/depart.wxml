@@ -1,0 +1,10 @@
+<!--pages/depart/depart.wxml-->
+<view class="depart">
+  <van-collapse accordion value="{{ activeName }}" bind:change="onChange" wx:for="{{all}}"
+    wx:key="description" wx:for-item="i" bind:open="onOpen" >
+    <van-collapse-item name="{{i.name}}">
+      <view slot="title"><van-icon name="orders-o" /> {{i.name}}</view>
+      <van-card desc="{{i.description}}" desc-class="desc-font" custom-class="custom" />
+    </van-collapse-item>
+  </van-collapse>
+</view>

@@ -1,1 +1,44 @@
-<view>id</view>
+<!--index.wxml-->
+<view class="container">
+
+  <!-- 地图 -->
+  <view class="map_container">
+    <map id="global_map" polygons="{{polygons}}" longitude="{{ longitude }}" latitude="{{ latitude }}" markers="{{ markers }}" scale="16" controls="{{ controls }}" style="width: {{ map_width }}px; height: {{ map_height }}px" bindmarkertap="toDetail" bindcallouttap="toDetail" show-location="true"></map>
+  </view>
+
+  <view class="cu-modal1 bottom-modal show" style="bottom: {{bottomHeight}}">
+      <view class="cu-dialog bg-white">
+        <view class="padding-xl">
+          <view class="cu-bar search bg-white">
+            <view class="search-form round">
+              <text class="cuIcon-search"></text>
+              <input 
+               type="text" 
+              bindfocus="getHeight" 
+              adjust-position="{{flyFlag}}"
+              confirm-type="search" 
+              value="{{keyword}}"
+              bindblur="getKeyWord"
+              bindconfirm="search"
+              >
+            </input>
+          </view>
+          <view class="action">
+            <button class="cu-btn bg-green shadow-blur round" bindtap="search">搜索</button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 搜索方式 -->
+      <view class="cu-list grid col-3">
+        <view class="cu-item" wx:for="{{icon}}" wx:key="id">
+          <text id="{{item.id}}" class="cuIcon-{{item.name}} lg {{item.id == isChecked? 'active' : 'text-gray'}}" bindtap="choiceStatus"></text>
+          <text class="{{item.id == isChecked? 'active' : 'text-gray'}}">{{item.description}}</text>
+        </view>
+      </view>
+
+      <van-toast id="van-toast" />
+  </view>
+
+  </view>
+</view>
