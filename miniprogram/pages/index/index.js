@@ -12,26 +12,7 @@ Page({
     latitude: 34.377653,
     map_width: 375,
     map_height: 700,
-    markers: [
-      {
-      id: 0,
-      longitude: 108.977368,
-      latitude: 34.377653,
-      callout: {
-        content: '当前位置',
-        color: '#e15f41',
-        fontSize: 12,
-        borderRadius:20,
-        padding: 10,
-        display: 'ALWAYS'
-      },
-      iconPath: '../../images/location_blue.png',
-      width: 50,
-      height: 50,
-      bottomHeight: 0,
-      point_id: ''
-    },
-    ],
+    markers: [],
     polygons: [{
       points: [
         {longitude: 108.976772, latitude: 34.381229},
@@ -46,10 +27,11 @@ Page({
         {longitude: 108.981391, latitude: 34.382398},
         {longitude: 108.976772, latitude: 34.381229},
       ],
-      fillColor: '#4F94CD33',
+      
       strokeColor: '#fff',
       strokeWidth: 2,
-      zIndex: 1
+      zIndex: 1,
+      scale: 16
     },{
       points:[
         {longitude: 108.971477, latitude: 34.379486},
@@ -61,7 +43,7 @@ Page({
         {longitude: 108.971509, latitude: 34.377006},
         {longitude: 108.971477, latitude: 34.379486},
       ],
-      fillColor: '#4F94CD33',
+    
       strokeColor: '#fff',
       strokeWidth: 2,
       zIndex: 1
@@ -87,14 +69,23 @@ Page({
     flyFlag: false,
     bottomHeight: '0rpx',
     keyword: '',
-    action: '',
-    units: []
+    action: 'getUnit',
+    units: [],
+    scale: 16
   },
 
   onReady: function(e) {
     this.mapCtx = wx.createMapContext('global_map')
+    wx.getLocation({
+      'type': 'gcj02'
+    }).then(res => {
+      this.mapCtx.moveToLocation({
+        longitude: res.longitude,
+        latitude: res.latitude
+      })
+      console.log(res);
+    })
   },
-
   onLoad: function() {
     wx.getSystemInfo({
       success: (res) => {
@@ -179,18 +170,18 @@ Page({
     }
   },
 
-  getCoordinate(e){
+  async getCoordinate(e){
     let point_id = e.currentTarget.dataset.point_id
     console.log("point_id:" + point_id);
     this.setData({
       point_id
     })
-    wx.cloud.callFunction({
+    await wx.cloud.callFunction({
           name:'point',
           data: {
             point_id
           }
-        }).then(res => {
+        }).then( res => {
           console.log('point:', res.result)
           let markers = this.data.markers
           let marker = {
@@ -209,19 +200,44 @@ Page({
             width: 50,
             height: 50
           }
-          // console.log('marker:', marker)
           markers.pop()
           markers.push(marker)
           this.setData({
-            markers
+            markers,
+            scale: 18,
+            currentPoint: res.result
           })
           this.mapCtx.moveToLocation({
             longitude: marker.longitude,
             latitude: marker.latitude
           })
           console.log('markers:', this.data.markers) 
-          
+          console.log("then结束");
         })
+        this.setData({
+          units:''
+        })
+  },
+  async routePlan(e){
+    await this.getCoordinate(e)
+    console.log("执行到then下");
+    let point = this.data.currentPoint;
+    console.log(point);
+    let plugin = requirePlugin('routePlan');
+    let key = 'IK5BZ-73MWV-65IPB-UMZOF-IY3OJ-FRBGX';  //使用在腾讯位置服务申请的key
+    let referer = '科大导航';   //调用插件的app的名称
+    let endPoint = JSON.stringify({
+        'name': point.name,
+        'longitude': point.coordinate.coordinates[0],
+        'latitude': point.coordinate.coordinates[1]
+    });
+    wx.navigateTo({
+        url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&mode=walking'+'&endPoint=' +endPoint
+    });
+
+    this.setData({
+      units:''
+    })
   },
 
   toDetail() {

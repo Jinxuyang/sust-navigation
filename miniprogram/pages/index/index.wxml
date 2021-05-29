@@ -3,7 +3,7 @@
 
   <!-- 地图 -->
   <view class="map_container">
-    <map id="global_map" polygons="{{polygons}}" longitude="{{ longitude }}" latitude="{{ latitude }}" markers="{{ markers }}" scale="16" controls="{{ controls }}" style="width: {{ map_width }}px; height: {{ map_height }}px" bindmarkertap="toDetail" bindcallouttap="toDetail" show-location="true"></map>
+    <map id="global_map" polygons="{{polygons}}" longitude="{{ longitude }}" latitude="{{ latitude }}" markers="{{ markers }}" scale="{{scale}}" controls="{{ controls }}" style="width: {{ map_width }}px; height: {{ map_height }}px" bindmarkertap="toDetail" bindcallouttap="toDetail" show-location="true"></map>
   </view>
 
   <view class="cu-modal1 bottom-modal show" style="bottom: {{bottomHeight}}">
@@ -36,6 +36,7 @@
 					<button class="cu-btn content" bindtap="getCoordinate" data-point_id="{{item.point_id}}">
 						<text class="text-grey">{{item.name}}@{{item.position}}</text>
 					</button>
+          <button bindtap="routePlan" data-point_id="{{item.point_id}}" >去这</button>
 				</view>
       </view>
 
