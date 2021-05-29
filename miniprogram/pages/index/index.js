@@ -43,7 +43,7 @@ Page({
         {longitude: 108.971509, latitude: 34.377006},
         {longitude: 108.971477, latitude: 34.379486},
       ],
-    
+      
       strokeColor: '#fff',
       strokeWidth: 2,
       zIndex: 1
