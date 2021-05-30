@@ -88,8 +88,6 @@ Page({
   onLoad: function() {
     wx.getSystemInfo({
       success: (res) => {
-        // console.log(res.windowWidth)
-        // console.log(res.windowHeight)
         this.setData({
           map_width: res.windowWidth,
           map_height: res.windowHeight
@@ -99,19 +97,15 @@ Page({
   },
 
   getHeight(e) {
-    // console.log("获取键盘高度",e.detail.height)
-    // console.log(this.data.bottomHeight)
     let bottomHeight = this.data.bottomHeight
     bottomHeight = (e.detail.height * 2 ) + 'rpx'
     this.setData({
       bottomHeight
     })
-    // console.log("之后", this.data.bottomHeight)
   },
 
   // 切换搜索选项
   choiceStatus(e) {
-    // console.log(e)
     let srchAction =''
     switch (e.currentTarget.id) {
       case 'unit':
@@ -132,7 +126,6 @@ Page({
       isChecked: e.currentTarget.id,
       action: srchAction
     })
-    // console.log('isChecked:',this.data.isChecked)
   },
 
   //点击搜索 
@@ -142,6 +135,7 @@ Page({
     console.log('keyword:',keyword)
     console.log('action:',action)
     if(keyword) {
+      Toast('正在搜索')
       wx.cloud.callFunction({
         name: 'search',
         data: {
@@ -154,15 +148,10 @@ Page({
           units: res.result.list
         })
         console.log('units:', this.data.units)
-        
-        // this.setData({
-        //   keyword: ''
-        // })
       }).catch(err => {
         console.log('请求search错误：',err)
         Toast('无法搜索到该地')
       })
-  
     } else {
       this.setData({
         units: ""
@@ -176,6 +165,7 @@ Page({
     this.setData({
       point_id
     })
+    Toast('正在加载')
     await wx.cloud.callFunction({
           name:'point',
           data: {

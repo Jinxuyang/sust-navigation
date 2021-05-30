@@ -62,7 +62,8 @@ async function getEvents(keyword){
   .addFields({
     units: {
       events: {
-        point_id :'$_id'
+        point_id :'$_id',
+        position : '$units.position'
       } 
     }
   }) 
@@ -86,7 +87,8 @@ async function getPeople(keyword){
   .addFields({
     units: {
       people: {
-        point_id :'$_id'
+        point_id :'$_id',
+        position : '$units.position'
       } 
     }
   }) 
