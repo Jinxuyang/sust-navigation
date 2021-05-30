@@ -28,7 +28,7 @@ Page({
         {longitude: 108.976772, latitude: 34.381229},
       ],
       
-      strokeColor: '#fff',
+      strokeColor: '#e67e22',
       strokeWidth: 2,
       zIndex: 1,
       scale: 16
@@ -43,8 +43,7 @@ Page({
         {longitude: 108.971509, latitude: 34.377006},
         {longitude: 108.971477, latitude: 34.379486},
       ],
-      
-      strokeColor: '#fff',
+      strokeColor: '#e67e22',
       strokeWidth: 2,
       zIndex: 1
     }],
@@ -65,7 +64,7 @@ Page({
         id: 'event'
       }
     ],
-    isChecked: 0,
+    isChecked: 'unit',
     flyFlag: false,
     bottomHeight: '0rpx',
     keyword: '',
@@ -112,7 +111,7 @@ Page({
 
   // 切换搜索选项
   choiceStatus(e) {
-    console.log(e)
+    // console.log(e)
     let srchAction =''
     switch (e.currentTarget.id) {
       case 'unit':
@@ -133,6 +132,7 @@ Page({
       isChecked: e.currentTarget.id,
       action: srchAction
     })
+    // console.log('isChecked:',this.data.isChecked)
   },
 
   //点击搜索 
@@ -247,9 +247,9 @@ Page({
   },
 
   //获取搜索的值
-  getKeyWord(e) {
+  revokeKeyBoard() {
     this.setData({
-      keyword: e.detail.value,
+      // keyword: e.detail.value,
       bottomHeight: 0
     })
   }

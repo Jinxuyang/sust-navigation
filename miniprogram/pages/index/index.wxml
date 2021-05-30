@@ -19,8 +19,8 @@
               bindfocus="getHeight" 
               adjust-position="{{flyFlag}}"
               confirm-type="search" 
-              value="{{keyword}}"
-              bindblur="getKeyWord"
+              model:value="{{keyword}}"
+              bindblur="revokeKeyBoard"
               bindconfirm="search"
               >
             </input>
@@ -33,10 +33,10 @@
 
       <view class="cu-list menu border card-menu margin-top" >
         <view class="cu-item" wx:for="{{units}}" wx:key="index">
-					<button class="cu-btn content" bindtap="getCoordinate" data-point_id="{{item.point_id}}">
-						<text class="text-grey">{{item.name}}@{{item.position}}</text>
-					</button>
-          <button bindtap="routePlan" data-point_id="{{item.point_id}}" >去这</button>
+					<button class="cu-btn content" bindtap="getCoordinate" data-point_id="{{item.point_id}}" style="padding-left:20rpx">
+						<text class="text-grey" >{{item.name}}  {{item.position}}</text>
+          </button>
+          <van-button plain type="primary" size="small" color="#39b54a" bindtap="routePlan" data-point_id="{{item.point_id}}" custom-style="width: 30rpx; margin-right: 10rpx">去这</van-button>
 				</view>
       </view>
 
